@@ -1,0 +1,13 @@
+record_type,algorithm,quantum,pid,arrival,burst,first_start,completion,waiting,turnaround,response,average_waiting,average_turnaround,average_response,makespan,time_unit,policy,cpu_count,context_switch_cost,io_wait
+PROCESS,FCFS,,P1,0,5,0,5,0,5,0,,,,,ticks,arrival_then_input,1,0,false
+PROCESS,FCFS,,P2,1,3,5,8,4,7,4,,,,,ticks,arrival_then_input,1,0,false
+PROCESS,FCFS,,P3,2,1,8,9,6,7,6,,,,,ticks,arrival_then_input,1,0,false
+SUMMARY,FCFS,,,,,,,,,,3.3333333333333335,6.333333333333333,3.3333333333333335,9,ticks,arrival_then_input,1,0,false
+PROCESS,SJF,,P1,0,5,0,5,0,5,0,,,,,ticks,burst_then_arrival_then_input,1,0,false
+PROCESS,SJF,,P3,2,1,5,6,3,4,3,,,,,ticks,burst_then_arrival_then_input,1,0,false
+PROCESS,SJF,,P2,1,3,6,9,5,8,5,,,,,ticks,burst_then_arrival_then_input,1,0,false
+SUMMARY,SJF,,,,,,,,,,2.6666666666666665,5.666666666666667,2.6666666666666665,9,ticks,burst_then_arrival_then_input,1,0,false
+PROCESS,RR,2,P1,0,5,0,9,4,9,0,,,,,ticks,arrivals_before_requeue,1,0,false
+PROCESS,RR,2,P2,1,3,2,8,4,7,1,,,,,ticks,arrivals_before_requeue,1,0,false
+PROCESS,RR,2,P3,2,1,4,5,2,3,2,,,,,ticks,arrivals_before_requeue,1,0,false
+SUMMARY,RR,2,,,,,,,,,3.3333333333333335,6.333333333333333,1,9,ticks,arrivals_before_requeue,1,0,false
