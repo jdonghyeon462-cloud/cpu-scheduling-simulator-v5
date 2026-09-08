@@ -53,7 +53,7 @@
       const statusCell = element('td'), status = element('span', '', 'status'); statusCell.append(status);
       const executed = element('td'), remaining = element('td');
       row.append(name, element('td', p.arrival), element('td', p.burst), statusCell, executed, remaining);
-      processViews.set(p.id, { status, executed, remaining });
+      processViews.set(p.id, { row, status, executed, remaining });
       return row;
     });
     $('processes').replaceChildren(...rows);
@@ -71,8 +71,13 @@
       view.future.style.width = `${100 - percent}%`;
     }
     const states = model.stateAt(run, time);
+    const visible = model.filterStates(states, $('status-filter').value, $('process-filter').value);
+    const visibleIds = new Set(visible.map(p => p.id));
+    $('filter-count').textContent = `${visible.length} / ${states.length}개 표시`;
+    $('filter-empty').hidden = visible.length > 0;
     for (const p of states) {
       const view = processViews.get(p.id);
+      view.row.hidden = !visibleIds.has(p.id);
       view.status.textContent = statuses[p.status]; view.status.className = `status ${p.status}`;
       view.executed.textContent = format(p.executed); view.remaining.textContent = format(p.remaining);
     }
@@ -88,6 +93,7 @@
   }
   function load(data, name) {
     setPlaying(false); experiment = data; selected = 0; time = 0;
+    $('status-filter').value = 'all'; $('process-filter').value = '';
     $('source-name').textContent = name;
     $('source-meta').textContent = `${data.input.length}개 작업 · ${data.runs.length}개 알고리즘 · 엔진 ${data.version}`;
     $('error').hidden = true; $('error').textContent = '';
@@ -140,6 +146,8 @@
   $('reset').addEventListener('click', () => { setPlaying(false); time = 0; render(); });
   $('seek').addEventListener('input', event => { setPlaying(false); time = Number(event.target.value); render(); });
   $('previous').addEventListener('click', () => { setPlaying(false); time = model.stepTime(experiment.runs[selected], time, -1); render(); });
+  $('status-filter').addEventListener('change', render);
+  $('process-filter').addEventListener('input', render);
   $('next').addEventListener('click', () => { setPlaying(false); time = model.stepTime(experiment.runs[selected], time, 1); render(); });
   window.addEventListener('resize', () => laneViews.forEach(drawLane));
   document.addEventListener('visibilitychange', () => { if (document.hidden) setPlaying(false); });

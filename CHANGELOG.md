@@ -1,5 +1,17 @@
 # Changelog
 
+## ver6 / v6.0.0 — 2026-09-08
+
+- 도착 힙과 준비 작업 최소 힙을 사용하는 SJF 구현.
+- V5 전수 탐색 SJF와 200개 결정적 workload의 작업별 결과 비교.
+- mixed·burst·sparse 패턴, seed, cases, processes 옵션의 반복 benchmark.
+- FCFS·SJF_SCAN·SJF_HEAP·RR q=1/2/4/8의 CSV 성능·통계 출력.
+- 입력 checksum, 실험 조건, timer와 경과 시간 기록.
+- V5 뷰어에 상태·작업 ID 필터 추가.
+- 대표 benchmark 결과와 V6 분석 문서 추가.
+- 기존 902개와 신규 286개로 총 1,188개 검사 통과.
+- 기존 V1~V5 저장소·버전 구조를 보존하고 `v6.0.0`으로 기록.
+
 ## ver5 / v5.0.0 — 2026-09-08
 
 - V4 JSON 실행 기록을 읽는 의존성 없는 HTML·CSS·JavaScript 뷰어 추가.

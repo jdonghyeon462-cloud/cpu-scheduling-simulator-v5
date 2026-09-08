@@ -1,0 +1,6 @@
+.process-filters{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.process-filters label{display:flex;gap:8px;align-items:center;font-size:.85rem;color:var(--muted)}
+.process-filters input{max-width:150px;background:#0f1829;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:8px}
+.process-filters select,.process-filters input{min-height:40px}
+.process-filters input:focus-visible{outline:3px solid #ffcc80;outline-offset:3px}
+[hidden]{display:none!important}

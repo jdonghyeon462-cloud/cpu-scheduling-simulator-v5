@@ -275,7 +275,7 @@ int main(int argc, char *argv[])
     if (option_status <= 0) {
         return option_status == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
     }
-    printf("CPU Scheduling Simulator ver5\n");
+    printf("CPU Scheduling Simulator ver6\n");
     printf("Mode: %s\n", mode == MODE_FCFS ? "FCFS" :
            mode == MODE_SJF ? "SJF (non-preemptive)" :
            mode == MODE_RR ? "Round Robin" : "Compare FCFS, SJF and RR");

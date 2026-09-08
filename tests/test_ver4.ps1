@@ -35,7 +35,7 @@ $run = Invoke-Simulator @('--algorithm', 'compare', '--quantum', '2', '--input',
 Check ($run.Contains('Loaded 3 processes') -and $run.Contains('Saved JSON:')) 'File operation status missing.'
 $json = Get-Content -LiteralPath $jsonPath -Raw | ConvertFrom-Json
 $csv = @(Import-Csv -LiteralPath $csvPath)
-Check ($json.schema_version -eq 1 -and $json.simulator_version -eq '5.0.0') 'JSON version metadata mismatch.'
+Check ($json.schema_version -eq 1 -and $json.simulator_version -eq '6.0.0') 'JSON version metadata mismatch.'
 Check ($json.time_unit -eq 'ticks' -and $json.assumptions.cpu_count -eq 1 -and
        $json.assumptions.context_switch_cost -eq 0 -and -not $json.assumptions.io_wait) 'Model metadata mismatch.'
 Check ($json.input.Count -eq 3 -and $json.runs.Count -eq 3) 'Missing input or algorithm results.'

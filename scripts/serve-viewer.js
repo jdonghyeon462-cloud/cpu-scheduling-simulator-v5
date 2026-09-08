@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const root = path.join(__dirname, '..', 'viewer');
 const files = { '/': ['index.html', 'text/html'], '/index.html': ['index.html', 'text/html'],
-  '/style.css': ['style.css', 'text/css'], '/model.js': ['model.js', 'text/javascript'],
+  '/style.css': ['style.css', 'text/css'], '/filters.css': ['filters.css', 'text/css'], '/model.js': ['model.js', 'text/javascript'],
   '/sample-data.js': ['sample-data.js', 'text/javascript'], '/app.js': ['app.js', 'text/javascript'] };
 const port = Number(process.argv[2] ?? 8787);
 if (!Number.isInteger(port) || port < 0 || port > 65535) throw new Error('Port must be 0..65535.');

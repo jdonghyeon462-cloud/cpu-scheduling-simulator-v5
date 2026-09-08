@@ -37,49 +37,70 @@ static void simulate_fcfs(Process processes[], int count)
     }
 }
 
+typedef struct {
+    int items[MAX_PROCESSES];
+    int size;
+    int by_burst;
+    const Process *input;
+} IndexHeap;
+
+/* ID 값 대신 원본 배열 위치를 마지막 기준으로 사용합니다. */
+static int precedes(const IndexHeap *heap, int a, int b)
+{
+    const Process *left = &heap->input[a], *right = &heap->input[b];
+    if (heap->by_burst && left->burst_time != right->burst_time)
+        return left->burst_time < right->burst_time;
+    if (left->arrival_time != right->arrival_time)
+        return left->arrival_time < right->arrival_time;
+    return a < b;
+}
+
+static void heap_push(IndexHeap *heap, int item)
+{
+    int position = heap->size++;
+    while (position > 0) {
+        int parent = (position - 1) / 2;
+        if (!precedes(heap, item, heap->items[parent])) break;
+        heap->items[position] = heap->items[parent];
+        position = parent;
+    }
+    heap->items[position] = item;
+}
+
+/* 호출자는 비어 있지 않은 힙에만 pop을 적용합니다. */
+static int heap_pop(IndexHeap *heap)
+{
+    int first = heap->items[0];
+    int last = heap->items[--heap->size];
+    int position = 0;
+    while (position * 2 + 1 < heap->size) {
+        int child = position * 2 + 1;
+        if (child + 1 < heap->size && precedes(heap, heap->items[child + 1], heap->items[child])) child++;
+        if (!precedes(heap, heap->items[child], last)) break;
+        heap->items[position] = heap->items[child];
+        position = child;
+    }
+    if (heap->size > 0) heap->items[position] = last;
+    return first;
+}
+
 static void simulate_sjf(const Process input[], int count, Process output[])
 {
-    int completed[MAX_PROCESSES] = {0};
-    int finished_count = 0;
-    long long current_time = 0;
-
-    while (finished_count < count) {
-        int selected = -1;
-        long long next_arrival = LLONG_MAX;
-        int i;
-
-        for (i = 0; i < count; ++i) {
-            if (completed[i]) {
-                continue;
-            }
-            if (input[i].arrival_time > current_time) {
-                if (input[i].arrival_time < next_arrival) {
-                    next_arrival = input[i].arrival_time;
-                }
-                continue;
-            }
-
-            /* 도착한 작업만 후보입니다. 실행 시간과 도착이 모두 같으면
-             * 먼저 순회한 원소를 유지하므로 ID 값과 무관하게 입력 순서입니다. */
-            if (selected == -1 ||
-                input[i].burst_time < input[selected].burst_time ||
-                (input[i].burst_time == input[selected].burst_time &&
-                 input[i].arrival_time < input[selected].arrival_time)) {
-                selected = i;
-            }
-        }
-
-        if (selected == -1) {
-            /* 남은 작업이 있지만 준비된 작업이 없을 때만 시간을 건너뜁니다. */
-            current_time = next_arrival;
-            continue;
-        }
-
-        output[finished_count] = input[selected];
-        finish_process(&output[finished_count], current_time);
-        current_time = output[finished_count].completion_time;
-        completed[selected] = 1;
-        ++finished_count;
+    IndexHeap arrivals = {.input = input, .by_burst = 0};
+    IndexHeap ready = {.input = input, .by_burst = 1};
+    long long time = 0;
+    int finished = 0, i;
+    for (i = 0; i < count; ++i) heap_push(&arrivals, i);
+    while (finished < count) {
+        int selected;
+        if (ready.size == 0 && arrivals.size > 0 && time < input[arrivals.items[0]].arrival_time)
+            time = input[arrivals.items[0]].arrival_time;
+        while (arrivals.size > 0 && input[arrivals.items[0]].arrival_time <= time)
+            heap_push(&ready, heap_pop(&arrivals));
+        selected = heap_pop(&ready);
+        output[finished] = input[selected];
+        finish_process(&output[finished], time);
+        time = output[finished++].completion_time;
     }
 }
 

@@ -127,5 +127,9 @@
     const index = upperBound(run.boundaries, time, x => x) - 1;
     return run.boundaries[Math.max(0, run.boundaries[index] === time ? index - 1 : index)];
   }
-  return { MAX_FILE_BYTES, prepare, parse, sliceAt, stateAt, stepTime };
+  function filterStates(states, status = 'all', query = '') {
+    const term = String(query).trim().toUpperCase();
+    return states.filter(p => (status === 'all' || p.status === status) && (!term || `P${p.id}`.includes(term)));
+  }
+  return { MAX_FILE_BYTES, prepare, parse, sliceAt, stateAt, stepTime, filterStates };
 });

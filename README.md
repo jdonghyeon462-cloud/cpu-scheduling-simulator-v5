@@ -1,13 +1,14 @@
-# CPU Scheduling Simulator ver5
+# CPU Scheduling Simulator ver6
 
 **C11로 구현한 FCFS·비선점 SJF·Round Robin CPU 스케줄링 시뮬레이터와 한국어 코드 분석 자료입니다.**
 
-현재 완성본은 **ver5 (`v5.0.0`)**입니다. 기존 저장소 주소와 폴더 이름의 `ver1`은 유지하며,
+현재 완성본은 **ver6 (`v6.0.0`)**입니다. V1~V5는 각각 독립된 저장소로 보존하며,
 [V1 소스·README](https://github.com/jdonghyeon462-cloud/cpu-scheduling-simulator-v1/tree/main)는
 `v1.0.0` 태그에서 그대로 확인할 수 있습니다.
 [V2 소스·README](https://github.com/jdonghyeon462-cloud/cpu-scheduling-simulator-v2/tree/main)도 보존했습니다.
 [V3 소스·README](https://github.com/jdonghyeon462-cloud/cpu-scheduling-simulator-v3/tree/main)도 태그에서 확인할 수 있습니다.
 [V4 소스·README](https://github.com/jdonghyeon462-cloud/cpu-scheduling-simulator-v4/tree/main)도 태그에서 확인할 수 있습니다.
+[V5 소스·README](https://github.com/jdonghyeon462-cloud/cpu-scheduling-simulator-v5/tree/main)도 태그에서 확인할 수 있습니다.
 
 프로세스의 도착 시간과 CPU 실행 시간을 입력하면 실행 순서, CPU 유휴 구간,
 각 프로세스의 대기·반환 시간과 평균 응답 시간을 출력합니다.
@@ -15,6 +16,7 @@
 한 번 입력한 데이터를 세 알고리즘에 각각 적용해 결과를 비교할 수 있습니다.
 V4에서는 입력 파일을 직접 읽고, 입력·CSV 비교표·전체 JSON 실행 기록을 저장할 수 있습니다.
 V5에서는 이 JSON을 브라우저에서 재생하며 작업 상태를 시간에 따라 확인할 수 있습니다.
+V6에서는 반복 가능한 대규모 workload를 생성하고 전수 탐색 SJF와 최소 힙 SJF의 결과·속도를 비교합니다.
 
 ## 빠른 안내
 
@@ -22,6 +24,7 @@ V5에서는 이 JSON을 브라우저에서 재생하며 작업 상태를 시간�
 - [파일 입출력 코드](src/data_io.c) · [V4 분석 및 파일 형식](docs/08-ver4-file-io.md)
 - [저장된 입력 샘플](examples/ver4-sample/input.txt) · [CSV 샘플](examples/ver4-sample/results.csv) · [JSON 샘플](examples/ver4-sample/results.json)
 - [V5 뷰어](viewer/index.html) · [뷰어 모델 테스트](tests/test_viewer.js)
+- [V6 벤치마크 코드](benchmarks/benchmark.c) · [벤치마크 실행](scripts/benchmark.ps1) · [V6 분석](docs/10-ver6-benchmarks.md)
 - [공통 자료구조](src/scheduler.h) · [FCFS·SJF·RR 계산 코드](src/scheduler.c)
 - [V3 상세 분석: 원형 큐·시간 할당량·응답 시간](docs/07-ver3-round-robin.md)
 - [V2 상세 분석: 도착 조건·동률·비교 실험](docs/06-ver2-sjf.md)
@@ -46,12 +49,18 @@ cpu-scheduling-simulator-ver1/
 │   ├── scheduler.c             # FCFS·SJF·RR 계산, 원형 큐와 통계
 │   ├── data_io.h               # 입력·내보내기 함수 선언
 │   └── data_io.c               # 엄격한 파일 읽기와 CSV·JSON 저장
+├── benchmarks/
+│   ├── reference_sjf.c         # V5 전수 탐색 SJF 참조 구현
+│   ├── reference_sjf.h
+│   ├── benchmark.c             # 반복 workload·타이머·CSV
+│   └── samples/                # 대표 측정 결과
 ├── viewer/
 │   ├── index.html               # 로컬 JSON 실행 기록 뷰어
 │   ├── style.css                # 반응형 화면 스타일
 │   ├── model.js                 # JSON 검증·상태·구간 계산
 │   ├── app.js                   # 재생·파일 선택·화면 갱신
-│   └── sample-data.js            # V5 기본 예제
+│   ├── sample-data.js            # V5 기본 예제
+│   └── filters.css               # V5 상태·ID 필터 스타일
 ├── docs/
 │   ├── 01-design.md            # 문제 정의, 자료구조, 알고리즘
 │   ├── 02-code-walkthrough.md  # 함수와 C 문법 분석
@@ -61,7 +70,8 @@ cpu-scheduling-simulator-ver1/
 │   ├── 06-ver2-sjf.md          # V2 구현 분석과 비교 실험
 │   ├── 07-ver3-round-robin.md  # V3 원형 큐·선점·실행 기록 분석
 │   ├── 08-ver4-file-io.md      # V4 파일 형식·재현·실패 처리 분석
-│   └── 09-ver5-viewer.md       # V5 JSON 뷰어·재생·상태 분석
+│   ├── 09-ver5-viewer.md       # V5 JSON 뷰어·재생·상태 분석
+│   └── 10-ver6-benchmarks.md   # V6 대규모 실험·최소 힙 분석
 ├── examples/
 │   ├── basic.txt              # 기본 계산
 │   ├── idle.txt               # CPU 유휴 구간
@@ -80,9 +90,11 @@ cpu-scheduling-simulator-ver1/
 │       ├── input.txt
 │       ├── results.csv
 │       └── results.json
-│   └── ver5-sample/           # V5 뷰어용 프로그램 출력
+│   ├── ver5-sample/           # V5 뷰어용 프로그램 출력
 │       ├── input.txt
 │       └── results.json
+│   └── ver6-sample/           # V6 반복 실험 입력·요약 결과
+│       └── benchmark.csv
 ├── scripts/
 │   ├── build.ps1              # 프로젝트 경로를 기준으로 빌드
 │   └── run.ps1                # 빌드 후 실행, 예제 입력 지원
@@ -93,7 +105,9 @@ cpu-scheduling-simulator-ver1/
 │   ├── test_ver3.ps1          # RR CLI·참조 모델·자원 한도 검사
 │   ├── test_round_robin.c     # 큐 최대 용량·순환·메모리 해제 검사
 │   ├── test_ver4.ps1          # 파일 왕복·형식·충돌·전체 기록 검사
-│   └── test_viewer.js         # JSON 모델·상태·시간 이동 검사
+│   ├── test_viewer.js         # JSON 모델·상태·시간 이동 검사
+│   ├── test_sjf_heap.c         # 최소 힙 SJF와 참조 구현 비교
+│   └── test_ver6.ps1          # 벤치마크·필터·재현성 검사
 ├── build/                     # 로컬 빌드·테스트 산출물, Git 추적 제외
 └── reports/                   # 개인 실험 결과, Git 추적 제외
 ```
@@ -147,6 +161,9 @@ pwsh -File .\scripts\run.ps1 -Algorithm compare -Quantum 1 -Example rr-basic
 pwsh -File .\scripts\run.ps1 -Algorithm compare -Quantum 2 -Example rr-basic -OutputDirectory reports/run01
 pwsh -File .\scripts\run.ps1 -Algorithm compare -InputFile reports/run01/input.txt -OutputDirectory reports/run02
 
+# V6 반복 성능 측정
+pwsh -File .\scripts\benchmark.ps1 -Cases 1000 -Processes 100 -Pattern mixed -Csv reports/benchmark.csv
+
 # V5 로컬 뷰어
 node .\scripts\serve-viewer.js 8787
 # 브라우저에서 http://127.0.0.1:8787/ 열기
@@ -185,6 +202,21 @@ cc -std=c11 -Wall -Wextra -Wpedantic src/main.c src/scheduler.c src/data_io.c -o
 | `--quantum N` | RR 시간 할당량, 1~1,000,000; rr/compare에서만 허용 |
 | `--menu` | 숫자로 선택: 1=FCFS, 2=SJF, 3=비교, 4=RR |
 | `--help` | 입력을 기다리지 않고 사용법 출력 |
+
+## V6 대규모 성능 실험
+
+```powershell
+pwsh -File .\scripts\benchmark.ps1 -Cases 1000 -Processes 100 -Pattern mixed -Csv reports/benchmark.csv
+```
+
+`benchmark.ps1`은 지정한 workload 수만큼 입력을 생성해 FCFS, 기존 전수 탐색 SJF(`SJF_SCAN`),
+최소 힙 SJF(`SJF_HEAP`), 시간 할당량 1·2·4·8의 RR을 실행합니다.
+출력 CSV에는 시드, 입력 패턴, 평균 대기·반환·응답, 평균 완료 시각,
+실행 구간 수, 입력 checksum, 경과 시간과 타이머 종류가 기록됩니다.
+
+측정 시간은 시스템 부하와 컴파일러에 따라 달라지므로 예시 수치를 성능 보장으로 해석하지 않습니다.
+두 SJF 방식의 평균과 checksum이 같아야 하며, 힙 방식의 개선은 후보 선택 자료구조에 대한 비교입니다.
+자세한 조건과 대표 CSV는 [V6 분석](docs/10-ver6-benchmarks.md)을 참고하세요.
 
 ## V5 실행 기록 뷰어
 
@@ -307,7 +339,7 @@ RR은 이 burst를 여러 실행 구간으로 나눕니다.
 FCFS는 안정적인 삽입 정렬 O(n²), 이후 계산 O(n)입니다.
 SJF는 작업 선택마다 남은 후보를 훑는 O(n²) 구현입니다.
 RR은 도착 순서를 정렬하고 원형 큐에서 작업을 순환시킵니다.
-실행 구간 수를 s라 하면 O(n² + s)이며 실제 시간 애니메이션은 구현하지 않았습니다.
+실행 구간 수를 s라 하면 O(n² + s)이며 V5 뷰어가 JSON 실행 기록을 재생합니다.
 
 ### RR 실행 기록의 크기
 
@@ -347,6 +379,12 @@ P3의 대기는 7에서 3으로 줄고, P2의 대기는 4에서 5로 늘어납�
 실제 문맥 교환 비용은 이 모델에 포함하지 않았습니다.
 [V3 상세 분석](docs/07-ver3-round-robin.md)에 큐 변화와 손계산을 정리했습니다.
 
+## V6 benchmark 실행 결과
+
+`reports/`는 개인 측정 결과용으로 Git에서 제외하고, 대표 결과는 [examples/ver6-sample/benchmark.csv](examples/ver6-sample/benchmark.csv)에 저장했습니다.
+동일한 `--seed`, `--pattern`, `--cases`, `--processes`를 사용하면 입력 checksum과 평균 통계가 재현됩니다.
+경과 시간은 시스템 부하에 따라 달라질 수 있습니다.
+
 ## 자동 테스트
 
 PowerShell 7 이상과 GCC가 필요합니다.
@@ -357,15 +395,16 @@ pwsh -File .\tests\test_ver2.ps1
 pwsh -File .\tests\test_ver3.ps1
 pwsh -File .\tests\test_ver4.ps1
 node .\tests\test_viewer.js
+pwsh -File .\tests\test_ver6.ps1
 ```
 
 소스를 다시 빌드한 후 고정 예제, 입력 검증, 최대 입력, 독립적인 tick 단위 참조 모델을 확인합니다.
-Windows에서 기존 702개와 V4 파일 입출력 176개, V5 뷰어 모델 24개로 **총 902개 검사**를 통과했습니다.
+Windows에서 기존 902개와 V6 힙·벤치마크 286개로 **총 1,188개 검사**를 통과했습니다.
 검증 항목과 결과는 [테스트 문서](docs/04-testing.md)에 기록했습니다.
 
 ## 버전 관리
 
-V1부터 V5까지 `v1.0.0`·`v2.0.0`·`v3.0.0`·`v4.0.0`·`v5.0.0` 태그로 구분합니다.
+V1부터 V6까지 `v1.0.0`·`v2.0.0`·`v3.0.0`·`v4.0.0`·`v5.0.0`·`v6.0.0` 태그로 구분합니다.
 저장소 주소와 폴더 구조를 유지한 채 변경 이력을 쌓습니다.
 각 태그에는 당시 소스·README·문서·테스트가 함께 남습니다.
-다음 단계는 [ver6 성능·대규모 실험](docs/05-roadmap.md)입니다.
+다음 단계는 [ver7 개선 계획](docs/05-roadmap.md)입니다.

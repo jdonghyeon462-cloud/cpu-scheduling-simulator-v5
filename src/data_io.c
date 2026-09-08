@@ -167,7 +167,7 @@ static void write_json(FILE *file, const Process input[], int count,
 {
     int i;
     int r;
-    fputs("{\n  \"schema_version\":1,\n  \"simulator_version\":\"5.0.0\",\n"
+    fputs("{\n  \"schema_version\":1,\n  \"simulator_version\":\"6.0.0\",\n"
           "  \"time_unit\":\"ticks\",\n"
           "  \"assumptions\":{\"cpu_count\":1,\"context_switch_cost\":0,\"io_wait\":false},\n"
           "  \"input\":[", file);
