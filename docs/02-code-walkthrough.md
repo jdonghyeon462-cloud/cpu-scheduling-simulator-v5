@@ -3,7 +3,7 @@
 [README](../README.md) · [이전: 설계](01-design.md) · [다음: 실험](03-experiments.md)
 
 이 문서는 V1 학습 기록입니다. 분석 대상은
-[v1.0.0의 src/main.c](https://github.com/jdonghyeon462-cloud/cpu-scheduling-simulator-ver1/blob/v1.0.0/src/main.c)입니다.
+[v1.0.0의 src/main.c](https://github.com/jdonghyeon462-cloud/cpu-scheduling-simulator-v1/blob/main/src/main.c)입니다.
 현재 V2에서는 계산 함수를 `scheduler.c`로 분리했습니다.
 변경된 함수 구성은 [V2 상세 분석](06-ver2-sjf.md)에서 설명합니다.
 먼저 `main`으로 전체 흐름을 읽고 아래 함수들을 순서대로 확인하면 됩니다.

@@ -2,7 +2,7 @@
 
 [README](../README.md) · [테스트](04-testing.md) · [다음 버전 계획](05-roadmap.md)
 
-이 문서는 V2 학습 기록입니다. [v2.0.0 소스](https://github.com/jdonghyeon462-cloud/cpu-scheduling-simulator-ver1/tree/v2.0.0)를 기준으로 설명합니다.
+이 문서는 V2 학습 기록입니다. [v2.0.0 소스](https://github.com/jdonghyeon462-cloud/cpu-scheduling-simulator-v2/tree/main)를 기준으로 설명합니다.
 현재 V3에서는 비교 모드에 RR과 평균 응답 시간을 추가했습니다. [V3 분석](07-ver3-round-robin.md)을 참고하세요.
 
 ## 1. V1에서 무엇이 달라졌는가?

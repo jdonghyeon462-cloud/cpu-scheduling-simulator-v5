@@ -3,11 +3,11 @@
 **C11로 구현한 FCFS·비선점 SJF·Round Robin CPU 스케줄링 시뮬레이터와 한국어 코드 분석 자료입니다.**
 
 현재 완성본은 **ver5 (`v5.0.0`)**입니다. 기존 저장소 주소와 폴더 이름의 `ver1`은 유지하며,
-[V1 소스·README](https://github.com/jdonghyeon462-cloud/cpu-scheduling-simulator-ver1/tree/v1.0.0)는
+[V1 소스·README](https://github.com/jdonghyeon462-cloud/cpu-scheduling-simulator-v1/tree/main)는
 `v1.0.0` 태그에서 그대로 확인할 수 있습니다.
-[V2 소스·README](https://github.com/jdonghyeon462-cloud/cpu-scheduling-simulator-ver1/tree/v2.0.0)도 보존했습니다.
-[V3 소스·README](https://github.com/jdonghyeon462-cloud/cpu-scheduling-simulator-ver1/tree/v3.0.0)도 태그에서 확인할 수 있습니다.
-[V4 소스·README](https://github.com/jdonghyeon462-cloud/cpu-scheduling-simulator-ver1/tree/v4.0.0)도 태그에서 확인할 수 있습니다.
+[V2 소스·README](https://github.com/jdonghyeon462-cloud/cpu-scheduling-simulator-v2/tree/main)도 보존했습니다.
+[V3 소스·README](https://github.com/jdonghyeon462-cloud/cpu-scheduling-simulator-v3/tree/main)도 태그에서 확인할 수 있습니다.
+[V4 소스·README](https://github.com/jdonghyeon462-cloud/cpu-scheduling-simulator-v4/tree/main)도 태그에서 확인할 수 있습니다.
 
 프로세스의 도착 시간과 CPU 실행 시간을 입력하면 실행 순서, CPU 유휴 구간,
 각 프로세스의 대기·반환 시간과 평균 응답 시간을 출력합니다.
